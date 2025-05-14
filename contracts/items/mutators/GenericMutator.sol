@@ -24,6 +24,7 @@ contract GenericMutator is IOtomItemMutator {
     function calculateTier(
         uint256,
         uint256[] memory variableOtomIds,
+        uint256[] memory,
         Trait[] memory baseTraits,
         uint256 paymentAmount
     ) external view override returns (uint256 tierLevel, Trait[] memory modifiedTraits) {
