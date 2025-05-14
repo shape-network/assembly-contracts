@@ -501,6 +501,7 @@ contract OtomItemsCore is
                 _itemId,
                 actualComponents,
                 _variableOtomIds,
+                _nonFungibleTokenIds,
                 getNonFungibleTokenId(item.id, mintCount),
                 actualPayment
             );
@@ -886,6 +887,7 @@ contract OtomItemsCore is
         uint256 itemId,
         ActualBlueprintComponent[] memory actualComponents,
         uint256[] calldata variableOtomIds,
+        uint256[] calldata nonFungibleTokenIds,
         uint256 tokenId,
         uint256 actualPayment
     ) private {
@@ -898,7 +900,15 @@ contract OtomItemsCore is
         Trait[] memory baseTraits = getTokenTraits(itemId);
 
         // Apply traits and tier based on mutator contract (if any)
-        _applyTraitsAndTier(item, itemId, tokenId, variableOtomIds, baseTraits, actualPayment);
+        _applyTraitsAndTier(
+            item,
+            itemId,
+            tokenId,
+            variableOtomIds,
+            nonFungibleTokenIds,
+            baseTraits,
+            actualPayment
+        );
 
         // Mint the token
         _otomItems.mint(msg.sender, tokenId, 1, "");
@@ -915,6 +925,7 @@ contract OtomItemsCore is
         uint256 itemId,
         uint256 tokenId,
         uint256[] calldata variableOtomIds,
+        uint256[] calldata nonFungibleTokenIds,
         Trait[] memory baseTraits,
         uint256 actualPayment
     ) private {
@@ -925,6 +936,7 @@ contract OtomItemsCore is
                     IOtomItemMutator.calculateTier.selector,
                     itemId,
                     variableOtomIds,
+                    nonFungibleTokenIds,
                     baseTraits,
                     actualPayment
                 )

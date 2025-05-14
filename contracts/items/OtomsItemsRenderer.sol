@@ -21,12 +21,8 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
         core = IOtomItemsCore(_core);
     }
 
-    function getMetadata(
-        uint256 tokenId
-    ) external view returns (string memory) {
-        Item memory item = core.getItemByItemId(
-            core.getItemIdForToken(tokenId)
-        );
+    function getMetadata(uint256 tokenId) external view returns (string memory) {
+        Item memory item = core.getItemByItemId(core.getItemIdForToken(tokenId));
         Trait[] memory traits = core.getTokenTraits(tokenId);
         uint256 tier = core.nonFungibleTokenToTier(tokenId);
 
@@ -39,7 +35,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             typeName: "Item ID",
             valueString: item.id.toString(),
             valueNumber: 0,
-            traitType: TraitType.NUMBER
+            traitType: TraitType.STRING
         });
 
         allTraits[1] = Trait({
@@ -60,7 +56,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             allTraits[3] = Trait({
                 typeName: "Tier",
                 valueString: tier.toString(),
-                valueNumber: 0,
+                valueNumber: tier,
                 traitType: TraitType.NUMBER
             });
         }
@@ -81,11 +77,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
                         '", "description": "',
                         item.description,
                         '", "image": "',
-                        _render(
-                            item,
-                            tier,
-                            core.nonFungibleTokenToActualBlueprint(tokenId)
-                        ),
+                        _render(item, tier, core.nonFungibleTokenToActualBlueprint(tokenId)),
                         '", "defaultImageUri": "',
                         core.getTokenDefaultImageUri(tokenId),
                         '", "attributes": [',
@@ -113,17 +105,14 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
         uint256 startRowName = 100;
         uint256 gapName = 30;
 
-        (
-            string memory nameRowsDisplay,
-            uint256 rows
-        ) = _sliceBytesIntoCenteredSVGRows(
-                bytes(nameDisplay),
-                "name",
-                10,
-                20,
-                startRowName,
-                gapName
-            );
+        (string memory nameRowsDisplay, uint256 rows) = _sliceBytesIntoCenteredSVGRows(
+            bytes(nameDisplay),
+            "name",
+            10,
+            20,
+            startRowName,
+            gapName
+        );
 
         (string memory formulaRowsDisplay, ) = _sliceBytesIntoCenteredSVGRows(
             bytes(formula),
@@ -149,13 +138,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             )
         );
 
-        return
-            string(
-                abi.encodePacked(
-                    "data:image/svg+xml;base64,",
-                    Base64.encode(bytes(svg))
-                )
-            );
+        return string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(bytes(svg))));
     }
 
     function _sliceBytes(
@@ -170,19 +153,11 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             _end = _bytes.length;
         }
 
-        while (
-            _start < _end &&
-            _start > 0 &&
-            _isUTF8ContinuationByte(_bytes[_start])
-        ) {
+        while (_start < _end && _start > 0 && _isUTF8ContinuationByte(_bytes[_start])) {
             _start++;
         }
 
-        while (
-            _end > _start &&
-            _end < _bytes.length &&
-            _isUTF8ContinuationByte(_bytes[_end])
-        ) {
+        while (_end > _start && _end < _bytes.length && _isUTF8ContinuationByte(_bytes[_end])) {
             _end--;
         }
 
@@ -207,32 +182,17 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
         while (i < data.length) {
             if (uint8(data[i]) <= 0x7F) {
                 i += 1;
-            } else if (
-                uint8(data[i]) >= 0xC2 &&
-                uint8(data[i]) <= 0xDF &&
-                i + 1 < data.length
-            ) {
+            } else if (uint8(data[i]) >= 0xC2 && uint8(data[i]) <= 0xDF && i + 1 < data.length) {
                 if ((uint8(data[i + 1]) & 0xC0) != 0x80) {
                     return false;
                 }
                 i += 2;
-            } else if (
-                uint8(data[i]) >= 0xE0 &&
-                uint8(data[i]) <= 0xEF &&
-                i + 2 < data.length
-            ) {
-                if (
-                    (uint8(data[i + 1]) & 0xC0) != 0x80 ||
-                    (uint8(data[i + 2]) & 0xC0) != 0x80
-                ) {
+            } else if (uint8(data[i]) >= 0xE0 && uint8(data[i]) <= 0xEF && i + 2 < data.length) {
+                if ((uint8(data[i + 1]) & 0xC0) != 0x80 || (uint8(data[i + 2]) & 0xC0) != 0x80) {
                     return false;
                 }
                 i += 3;
-            } else if (
-                uint8(data[i]) >= 0xF0 &&
-                uint8(data[i]) <= 0xF7 &&
-                i + 3 < data.length
-            ) {
+            } else if (uint8(data[i]) >= 0xF0 && uint8(data[i]) <= 0xF7 && i + 3 < data.length) {
                 if (
                     (uint8(data[i + 1]) & 0xC0) != 0x80 ||
                     (uint8(data[i + 2]) & 0xC0) != 0x80 ||
@@ -248,9 +208,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
         return true;
     }
 
-    function _sanitizeUTF8(
-        bytes memory data
-    ) internal pure returns (string memory) {
+    function _sanitizeUTF8(bytes memory data) internal pure returns (string memory) {
         bytes memory sanitized = new bytes(data.length);
         uint256 sanitizedLength = 0;
         uint256 i = 0;
@@ -317,29 +275,13 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             Molecule memory molecule = otomsDatabase.getMoleculeByTokenId(
                 _component.itemIdOrOtomTokenId
             );
-            return
-                string(
-                    abi.encodePacked(
-                        _component.amount.toString(),
-                        " ",
-                        molecule.name
-                    )
-                );
+            return string(abi.encodePacked(_component.amount.toString(), " ", molecule.name));
         } else if (
             _component.componentType == ComponentType.FUNGIBLE_ITEM ||
             _component.componentType == ComponentType.NON_FUNGIBLE_ITEM
         ) {
-            Item memory item = core.getItemByItemId(
-                _component.itemIdOrOtomTokenId
-            );
-            return
-                string(
-                    abi.encodePacked(
-                        _component.amount.toString(),
-                        " ",
-                        item.name
-                    )
-                );
+            Item memory item = core.getItemByItemId(_component.itemIdOrOtomTokenId);
+            return string(abi.encodePacked(_component.amount.toString(), " ", item.name));
         } else {
             return "";
         }
@@ -352,29 +294,13 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
             Molecule memory molecule = otomsDatabase.getMoleculeByTokenId(
                 _component.itemIdOrOtomTokenId
             );
-            return
-                string(
-                    abi.encodePacked(
-                        _component.amount.toString(),
-                        " ",
-                        molecule.name
-                    )
-                );
+            return string(abi.encodePacked(_component.amount.toString(), " ", molecule.name));
         } else if (
             _component.componentType == ComponentType.FUNGIBLE_ITEM ||
             _component.componentType == ComponentType.NON_FUNGIBLE_ITEM
         ) {
-            Item memory item = core.getItemByItemId(
-                _component.itemIdOrOtomTokenId
-            );
-            return
-                string(
-                    abi.encodePacked(
-                        _component.amount.toString(),
-                        " ",
-                        item.name
-                    )
-                );
+            Item memory item = core.getItemByItemId(_component.itemIdOrOtomTokenId);
+            return string(abi.encodePacked(_component.amount.toString(), " ", item.name));
         } else {
             return "";
         }
@@ -389,10 +315,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
         unchecked {
             do {
                 attributes = string(
-                    abi.encodePacked(
-                        attributes,
-                        _getJSONTraitItem(traits[i], i == length - 1)
-                    )
+                    abi.encodePacked(attributes, _getJSONTraitItem(traits[i], i == length - 1))
                 );
             } while (++i < length);
         }
@@ -411,7 +334,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
                             '{"trait_type": "',
                             trait.typeName,
                             '", "value": ',
-                            '""',
+                            trait.valueNumber.toString(),
                             "}",
                             lastItem ? "" : ","
                         )
@@ -463,8 +386,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
                 );
         }
 
-        return
-            string(abi.encodePacked("(T", _tier.toString(), ") ", _item.name));
+        return string(abi.encodePacked("(T", _tier.toString(), ") ", _item.name));
     }
 
     function _getFormula(
@@ -481,9 +403,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
                 formula = string(
                     abi.encodePacked(
                         formula,
-                        _getBlueprintComponentLabel(
-                            _actualBlueprintComponents[i]
-                        )
+                        _getBlueprintComponentLabel(_actualBlueprintComponents[i])
                     )
                 );
             }
@@ -493,10 +413,7 @@ contract OtomItemsRenderer is IOtomItemsRenderer {
                     formula = string(abi.encodePacked(formula, " + "));
                 }
                 formula = string(
-                    abi.encodePacked(
-                        formula,
-                        _getBlueprintComponentLabel(_item.blueprint[i])
-                    )
+                    abi.encodePacked(formula, _getBlueprintComponentLabel(_item.blueprint[i]))
                 );
             }
         }
