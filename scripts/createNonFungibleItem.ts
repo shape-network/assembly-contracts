@@ -5,8 +5,7 @@ const OTOM_ITEMS_CORE_ADDRESS = "0xe8af571878D33CfecA4eA11caEf124E5ef105a30"; //
 const item = {
     name: "Jusonic Sword",
     description: "A non-fungible sword made of Ju3 and U77",
-    imageUri:
-        "https://oldschool.runescape.wiki/images/Steel_sword_detail.png?eb2e6",
+    imageUri: "https://oldschool.runescape.wiki/images/Wilderness_sword_1_detail.png?29623",
     tieredImageUris: ["", "", "", "", "", "", ""],
     blueprint: [
         {
@@ -51,6 +50,7 @@ const main = async () => {
         item.feeRecipient
     );
 
+    console.log(`Item created with ID: ${Number(await core.nextItemId()) - 1}`);
 };
 
 main();
