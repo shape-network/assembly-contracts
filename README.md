@@ -8,7 +8,7 @@ Check out the [Assembly docs](https://docs.shape.network/building-on-shape/oncha
 
 ## Creating Assembly Items
 
-This repo contains a few example scripts for creating Assembly items using the `OtomItemsCore` contract.
+This repo contains a few example scripts for creating Assembly items using the [`OtomItemsCore`](https://github.com/shape-network/assembly-contracts/blob/main/contracts/items/OtomItemsCore.sol) contract.
 
 ### [createFungibleItem](https://github.com/shape-network/assembly-contracts/blob/main/scripts/createFungibleItem.ts)
 
@@ -22,6 +22,6 @@ Used to create a non-fungible "Jusonic Sword". This item can be crafted using on
 
 Used to create a non-fungible tiered "Jusonic Sword". This item can be crafted using one _Ju3_, one _U77_ otom and one additional miscellaneous otom. This extra otom will be used to calculate the tier of the sword.
 
-The logic for tiering is handled in the [SwordMutator](https://github.com/shape-network/assembly-contracts/blob/main/contracts/items/mutators/SwordMutator.sol). It calculates the tier based on the mass of the otom. Scaling the damage of the sword based on its tier.
+The logic for tiering is handled in the [`SwordMutator`](https://github.com/shape-network/assembly-contracts/blob/main/contracts/items/mutators/SwordMutator.sol). It calculates the tier based on the mass of the otom. Scaling the damage of the sword based on its tier.
 
 The mutator also keeps track of the number of battles fought. If 100 battles have been fought, the sword will be destroyed.
