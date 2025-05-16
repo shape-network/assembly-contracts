@@ -27,7 +27,12 @@ contract GenericMutator is IOtomItemMutator {
         uint256[] memory,
         Trait[] memory baseTraits,
         uint256 paymentAmount
-    ) external view override returns (uint256 tierLevel, Trait[] memory modifiedTraits) {
+    )
+        external
+        view
+        override
+        returns (uint256 tierLevel, Trait[] memory modifiedTraits)
+    {
         if (paymentAmount == 0 && variableOtomIds.length == 0) {
             return (0, baseTraits);
         }
@@ -38,7 +43,9 @@ contract GenericMutator is IOtomItemMutator {
         // Example: Sum the hardness values of all variable otoms
         for (uint256 i = 0; i < variableOtomIds.length; i++) {
             uint256 totalMassOfMolecule = 0;
-            Molecule memory molecule = OTOMS_DATABASE.getMoleculeByTokenId(variableOtomIds[i]);
+            Molecule memory molecule = OTOMS_DATABASE.getMoleculeByTokenId(
+                variableOtomIds[i]
+            );
 
             for (uint256 j = 0; j < molecule.givingAtoms.length; j++) {
                 totalMassOfMolecule += molecule.givingAtoms[j].mass;
@@ -91,7 +98,12 @@ contract GenericMutator is IOtomItemMutator {
         address,
         Trait[] calldata currentTraits,
         bytes calldata
-    ) external pure override returns (Trait[] memory updatedTraits, bool shouldDestroy) {
+    )
+        external
+        pure
+        override
+        returns (Trait[] memory updatedTraits, bool shouldDestroy)
+    {
         shouldDestroy = false;
 
         updatedTraits = currentTraits;
@@ -104,7 +116,9 @@ contract GenericMutator is IOtomItemMutator {
                 }
 
                 updatedTraits[i].valueNumber--;
-                updatedTraits[i].valueString = updatedTraits[i].valueNumber.toString();
+                updatedTraits[i].valueString = updatedTraits[i]
+                    .valueNumber
+                    .toString();
 
                 if (updatedTraits[i].valueNumber == 0) {
                     shouldDestroy = true;
