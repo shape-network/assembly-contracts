@@ -8,7 +8,7 @@ import "hardhat-watcher";
 import { HardhatUserConfig } from "hardhat/config";
 
 const accounts = {
-    mnemonic: process.env.SEED_PHRASE || "abc abc abc abc abc abc abc abc abc abc abc abc",
+    mnemonic: process.env.TESTNET_SEED_PHRASE || "abc abc abc abc abc abc abc abc abc abc abc abc",
 };
 
 const config: HardhatUserConfig = {
@@ -22,32 +22,26 @@ const config: HardhatUserConfig = {
             },
         },
     },
-    networks: process.env.IS_CI_ACTION
-        ? undefined
-        : {
+    networks: {
               hardhat: {
                   allowUnlimitedContractSize: false,
               },
               mainnet: {
                   chainId: 1,
                   url: process.env.MAINNET_RPC_URL,
-                  accounts: {
-                      mnemonic: process.env.SEED_PHRASE,
-                  },
+                  accounts:process.env.MAINNET_PRIVATE_KEY
+                  ? [process.env.MAINNET_PRIVATE_KEY]
+                  : accounts,
               },
               sepolia: {
                   chainId: 11155111,
                   url: process.env.SEPOLIA_RPC_URL,
-                  accounts: {
-                      mnemonic: process.env.SEED_PHRASE,
-                  },
+                  accounts,
               },
               shapeSepolia: {
                   chainId: 11011,
-                  url: process.env.SHAPE_RPC_URL,
-                  accounts: {
-                      mnemonic: process.env.SEED_PHRASE,
-                  },
+                  url: process.env.SHAPE_SEPOLIA_RPC_URL,
+                  accounts,
               },
               shapeMainnet: {
                   chainId: 360,
