@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-const OTOM_ITEMS_CORE_ADDRESS = "0xe8af571878D33CfecA4eA11caEf124E5ef105a30";
+const OTOM_ITEMS_CORE_ADDRESS = "0xe8af571878D33CfecA4eA11caEf124E5ef105a30"; // Shape Mainnet
 
 const item = {
     name: "Jusonic Materia",
