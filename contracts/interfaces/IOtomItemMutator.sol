@@ -12,6 +12,7 @@ interface IOtomItemMutator {
      * @dev Tier calculation function
      * @param itemId The ID of the item
      * @param variableOtomIds An array of variable otom IDs
+     * @param nonFungibleTokenIds An array of non-fungible token IDs
      * @param baseTraits An array of base traits
      * @param paymentAmount The amount paid by the user for crafting
      * @return tierLevel The calculated tier level (1-7)
@@ -20,6 +21,7 @@ interface IOtomItemMutator {
     function calculateTier(
         uint256 itemId,
         uint256[] memory variableOtomIds,
+        uint256[] memory nonFungibleTokenIds,
         Trait[] memory baseTraits,
         uint256 paymentAmount
     )
